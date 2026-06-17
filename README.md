@@ -12,7 +12,7 @@ O sistema permite:
 
 1. Registrar pedidos pela interface web.
 2. Classificar automaticamente pedidos pequenos como `FAST_TRACK`.
-3. Persistir pedidos em memoria no `order-service`.
+3. Persistir pedidos em banco de dados pg no `order-service`.
 4. Propagar a criacao do pedido para o `kitchen-service`.
 5. Visualizar, em tempo real simples por polling, a fila da cozinha.
 6. Avancar o status operacional do pedido.
