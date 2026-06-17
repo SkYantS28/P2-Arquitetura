@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: campus-order-postgres
+    environment:
+      POSTGRES_DB: campus_order_hub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - campus-order-network
+
+  order-service:
+    build: ./services/order-service
+    container_name: order-service
+    environment:
+      PORT: 3001
+      KITCHEN_SERVICE_URL: http://kitchen-service:3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/campus_order_hub
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - kitchen-service
+    networks:
+      - campus-order-network
+
+  kitchen-service:
+    build: ./services/kitchen-service
+    container_name: kitchen-service
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/campus_order_hub
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+    networks:
+      - campus-order-network
+
+  web:
+    build: ./apps/web
+    container_name: web
+    environment:
+      VITE_ORDER_SERVICE_URL: http://localhost:3001
+      VITE_KITCHEN_SERVICE_URL: http://localhost:3002
+    ports:
+      - "5173:5173"
+    depends_on:
+      - order-service
+      - kitchen-service
+    networks:
+      - campus-order-network
+
+networks:
+  campus-order-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

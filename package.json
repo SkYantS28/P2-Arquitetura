@@ -1,0 +1,16 @@
+{
+  "name": "campus-order-hub",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build": "npm run build -ws",
+    "test": "npm run test -ws",
+    "test:unit": "npm run test:unit -ws",
+    "test:bdd": "npm run test:bdd -ws",
+    "dev": "npm run dev -ws"
+  }
+}
